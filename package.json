@@ -1,0 +1,23 @@
+{
+  "name": "push_rabbitmq",
+  "version": "1.0.0",
+  "engines": {
+    "node": "10.15.2",
+    "yarn": "1.22.4"
+  },
+  "main": "index.js",
+  "repository": "https://github.com/micaellagouveia/push_rabbitmq.git",
+  "author": "Micaella Gouveia <micaella2212@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "node": "^14.4.0"
+  }
+}
