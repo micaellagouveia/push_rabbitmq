@@ -1,4 +1,7 @@
 node_modules
+yarn.lock
+
+.env
 
 push_branch_develop_com_script_sql.json
 push_branch_master_com_script_sql.json
