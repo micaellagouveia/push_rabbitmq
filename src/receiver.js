@@ -1,31 +1,38 @@
 
 const amqp = require('amqplib/callback_api');
 
-amqp.connect('amqp://localhost', function (err0, connection) {
-    if (err0) throw error0;
+amqp.connect(process.env.AMQP_URL, function (err0, connection) {
+    if (err0) throw err0;
+
+    console.log('conectado')
 
     connection.createChannel(function (err1, channel) {
+        
         if (err1) throw err1;
 
         const exchange = 'pje-dev-platform-exchange';
+        const queue = 'dev-platform.push'
+        const key = process.env.ROUTINGKEY
+
+        console.log('canal criado')
 
         channel.assertExchange(exchange, 'topic', {
             durable: false
         });
+        console.log('exchange ok')
 
-        channel.assertQueue('', {
-            exclusive: true
-        }, function (error2, q) { // q -> retorna uma json. q.queue -> nome da fila
-            if (error2) {
-                throw error2;
-            }
-            console.log(' [*] Waiting for logs. To exit press CTRL+C');
+        channel.assertQueue(queue, { exclusive: true })
 
-            channel.consume(q.queue, function (msg) { //mensagem será enviada pela exchange e dps tratada 
-                console.log(" [x] %s:'%s'", msg.fields.routingKey, msg.content.toString());
-            }, {
-                noAck: true
-            });
-        });
+        console.log('queue criada')
+
+        channel.bindQueue(queue, exchange, key)
+
+        console.log('bind')
+
+       /* channel.consume(q.queue, function (msg) { //mensagem será enviada pela exchange e dps tratada 
+            console.log(" [x] %s:'%s'", msg.fields.routingKey, msg.content.toString());
+        }, {
+            noAck: true
+        });*/
     });
 });
