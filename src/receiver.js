@@ -1,9 +1,11 @@
 
+require('dotenv/config'); 
 const amqp = require('amqplib/callback_api');
 
-amqp.connect(process.env.AMQP_URL, function (err0, connection) {
+amqp.connect("amqp://pje-dev:CkbSeTOm6wmt@mq.stg.cnj.cloud/pje-dev-platform", function (err0, connection) {
     if (err0) throw err0;
 
+    console.log(process.env.AMQP_URL)
     console.log('conectado')
 
     connection.createChannel(function (err1, channel) {
@@ -12,16 +14,17 @@ amqp.connect(process.env.AMQP_URL, function (err0, connection) {
 
         const exchange = 'pje-dev-platform-exchange';
         const queue = 'dev-platform.push'
-        const key = process.env.ROUTINGKEY
+        const key = "dev-platform.gitlab.PUSH"
 
+        console.log(key)
         console.log('canal criado')
 
         channel.assertExchange(exchange, 'topic', {
-            durable: false
+            durable: true
         });
         console.log('exchange ok')
 
-        channel.assertQueue(queue, { exclusive: true })
+        channel.assertQueue(queue, { exclusive: false })
 
         console.log('queue criada')
 
@@ -29,10 +32,10 @@ amqp.connect(process.env.AMQP_URL, function (err0, connection) {
 
         console.log('bind')
 
-       /* channel.consume(q.queue, function (msg) { //mensagem será enviada pela exchange e dps tratada 
-            console.log(" [x] %s:'%s'", msg.fields.routingKey, msg.content.toString());
+        channel.consume(queue, function (msg) { //mensagem será enviada pela exchange e dps tratada 
+            console.log(msg.content.toString())
         }, {
             noAck: true
-        });*/
+        });
     });
 });
