@@ -1,8 +1,8 @@
 
-require('dotenv/config'); 
+require('dotenv/config')
 const amqp = require('amqplib/callback_api');
 
-amqp.connect("amqp://pje-dev:CkbSeTOm6wmt@mq.stg.cnj.cloud/pje-dev-platform", function (err0, connection) {
+amqp.connect(process.env.AMQP_URL, function (err0, connection) {
     if (err0) throw err0;
 
     console.log(process.env.AMQP_URL)
@@ -14,7 +14,7 @@ amqp.connect("amqp://pje-dev:CkbSeTOm6wmt@mq.stg.cnj.cloud/pje-dev-platform", fu
 
         const exchange = 'pje-dev-platform-exchange';
         const queue = 'dev-platform.push'
-        const key = "dev-platform.gitlab.PUSH"
+        const key = process.env.ROUTINGKEY
 
         console.log(key)
         console.log('canal criado')
