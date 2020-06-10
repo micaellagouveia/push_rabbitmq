@@ -1,4 +1,3 @@
-
 require('dotenv/config')
 const amqp = require('amqplib/callback_api');
 
@@ -32,7 +31,7 @@ amqp.connect(process.env.AMQP_URL, function (err0, connection) {
 
         console.log('bind')
 
-        channel.consume(queue, function (msg) { //mensagem será enviada pela exchange e dps tratada 
+        channel.consume(queue, function (msg) {
             console.log(msg.content.toString())
         }, {
             noAck: true
