@@ -2,6 +2,7 @@ require('dotenv/config')
 const amqp = require('amqplib/callback_api');
 const Push = require('./models/Push')
 const utils = require('./utils')
+const repository = require('./requests/repository')
 
 amqp.connect(process.env.AMQP_URL, function (err0, connection) {
     if (err0) throw err0;
@@ -22,7 +23,7 @@ amqp.connect(process.env.AMQP_URL, function (err0, connection) {
 
             let mensagem = JSON.parse(msg.content.toString())
 
-            
+
             console.log(mensagem)
             console.log('***********')
 
@@ -32,20 +33,26 @@ amqp.connect(process.env.AMQP_URL, function (err0, connection) {
 
             let modified = push.modified
             let added = push.added
-            let removed = push.removed
-            let check = false
 
             console.log('Branch: ' + branch)
 
-            if(branch === 'develop'){
-            console.log('MODIFIED')
-            console.log(modified)
-            console.log('ADDED')
-            console.log(added)
+            if (branch === 'develop') {
+                console.log('MODIFIED')
+                console.log(modified)
+                console.log('ADDED')
+                console.log(added)
 
-                const check = utils.checkSql(modified, added)
+                const path = utils.checkSql(modified, added)
 
-                if(check) console.log('*********  Arquivo SQL modificado  ***********')
+                console.log('PATH')
+                console.log(path)
+
+               /* if (path) {
+                    //tenho que tratar o path para ficar na pasta certa para achar as versões
+                    console.log('*********  Arquivo SQL modificado  ***********')
+                    const version = repository.getHomologVersion(push.id, path/* PATH TEM QUE ESTAR JA CERTO)
+                    console.log(version)
+                }*/
             }
 
         }, {

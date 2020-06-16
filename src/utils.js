@@ -1,15 +1,14 @@
 module.exports = {
     checkSql: (modified, added) => {
-        let check = false
 
         for (let i in modified) {
-            if (modified[i].includes('.sql')) check = true
+            if (modified[i].includes('.sql')) return modified[i]
         }
         if (!check) {
             for (let i in added) {
-                if (added[i].includes('.sql')) check = true
+                if (added[i].includes('.sql')) return added[i]
             }
         }
-        return check
-    }
+        return ''
+    },
 }
