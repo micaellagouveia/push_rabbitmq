@@ -30,7 +30,6 @@ amqp.connect(process.env.AMQP_URL, function (err0, connection) {
             const push = new Push(mensagem)
 
             const branch = push.branch
-
             let modified = push.modified
             let added = push.added
 
@@ -42,9 +41,12 @@ amqp.connect(process.env.AMQP_URL, function (err0, connection) {
                 console.log('ADDED')
                 console.log(added)
 
-                const path = utils.checkSql(modified, added)
+                const sql = utils.checkSql(modified, added)
 
                 console.log('PATH')
+                console.log(sql)
+
+                const path = utils.getPath(sql)
                 console.log(path)
 
                /* if (path) {

@@ -14,4 +14,5 @@ routes.get('/rabbitmq', (req, res) => {
     return res.json(msg)
 })
 
+
 module.exports = routes
