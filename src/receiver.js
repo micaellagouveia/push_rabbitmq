@@ -1,4 +1,4 @@
-require('dotenv/config')
+/*require('dotenv/config')
 const amqp = require('amqplib/callback_api');
 const Push = require('./models/Push')
 const utils = require('./utils')
@@ -54,7 +54,7 @@ amqp.connect(process.env.AMQP_URL, function (err0, connection) {
                     console.log('*********  Arquivo SQL modificado  ***********')
                     const version = repository.getHomologVersion(push.id, path/* PATH TEM QUE ESTAR JA CERTO)
                     console.log(version)
-                }*/
+                }*//*
             }
 
         }, {
@@ -64,4 +64,4 @@ amqp.connect(process.env.AMQP_URL, function (err0, connection) {
     });
 });
 
-
+*/

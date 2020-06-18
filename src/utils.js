@@ -10,14 +10,15 @@ module.exports = {
         return ''
     },
 
-    getPath: (sql)=> {
+    getPath: (sql) => {
         const array = sql.split('/')
         let path = ''
-        for(let i in array){
-            if(array[i] === 'migrations'){
-                path += array[i] + '/'
+
+        for (let i in array) {
+            if (array[i] === 'migrations') {
+                path += array[i]
                 break
-            } 
+            }
             else {
                 path += array[i] + '/'
             }
