@@ -341,9 +341,9 @@ node-bin-setup@^1.0.0:
   integrity sha512-uPIxXNis1CRbv1DwqAxkgBk5NFV3s7cMN/Gf556jSw6jBvV7ca4F9lRL/8cALcZecRibeqU+5dFYqFFmzv5a0Q==
 
 node@^12.18.1:
-  version "12.18.0"
-  resolved "https://registry.yarnpkg.com/node/-/node-12.18.0.tgz#4fd230416dc6c60da31397b8afcf37276f8d1a83"
-  integrity sha512-MTQnAT0iOy3tYTrXc3SfJU9SKgO7gfvKkktsctRYU/J9T/cCQG1z9whT2+/lxDb0YPMYxjK2l+8z2abXDIpv7Q==
+  version "12.18.1"
+  resolved "https://registry.yarnpkg.com/node/-/node-12.18.1.tgz#cc84c8a8e143a4a4621a4ae749d701f7ac8c0c8e"
+  integrity sha512-ipYAiNamYG0B+Chb1fbzOnstplHPTzjQur90HljDtOXyXwpciOAx2xPnfKNadPLcefgzCpsAavN+sJsl/hGcMA==
   dependencies:
     node-bin-setup "^1.0.0"
 
@@ -506,3 +506,8 @@ vary@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
+
+xmldom@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.3.0.tgz#e625457f4300b5df9c2e1ecb776147ece47f3e5a"
+  integrity sha512-z9s6k3wxE+aZHgXYxSTpGDo7BYOUfJsIRyoZiX6HTjwpwfS2wpQBQKa2fD+ShLyPkqDYo5ud7KitmLZ2Cd6r0g==
