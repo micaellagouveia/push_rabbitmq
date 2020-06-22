@@ -24,5 +24,21 @@ module.exports = {
             }
         }
         return path
+    },
+
+
+    getFileVersion: (sqlPath) => {
+
+        const fileVersion = sqlPath.split('/')
+        const i = fileVersion.length - 2
+
+        return fileVersion[i]
+    },
+
+    compareVersions: (homologVersion, fileVersion) => {
+        if(fileVersion === homologVersion){
+            return false
+        }
+        return true
     }
 }

@@ -8,7 +8,7 @@ routes.get('/', (req, res) => {
     return res.json({ Hello: "World" })
 })
 
-routes.post('/rabbitmq', (req, res) => {
+routes.post('/rabbitmq', async (req, res) => {
 
     const push = new Push(req.body)
 
@@ -16,7 +16,7 @@ routes.post('/rabbitmq', (req, res) => {
     let modified = push.modified
     let added = push.added
 
-   // console.log('Branch: ' + branch)
+    // console.log('Branch: ' + branch)
 
     if (branch === 'develop') {
         /*console.log('MODIFIED')
@@ -24,20 +24,20 @@ routes.post('/rabbitmq', (req, res) => {
         console.log('ADDED')
         console.log(added)*/
 
-      /*  const sql = utils.checkSql(modified, added)
-        
-
-        console.log('PATH')
+        const sql = utils.checkSql(modified, added)
         console.log(sql)
 
-        const path = utils.getPath(sql)
-        console.log(path)*/
+       if (sql) {
+            const homologVersion = await repository.getHomologVersion(push.id)
+            
+            const fileVersion = utils.getFileVersion(sql)
+            const checkVersions = utils.compareVersions(homologVersion, fileVersion)
+            return res.send(checkVersions)
+        }
+        return res.send('Arquivo .sql não foi modificado')
 
-            const pom = repository.getPomFile(push.id)
-
-            console.log(pom)
-            return pom
     }
+    return res.send('Branch develop não está sendo requisitada.')
 
 })
 
