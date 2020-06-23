@@ -4,6 +4,7 @@ const DOMParser = require('xmldom').DOMParser
 
 module.exports = {
 
+    // Pega a versão que está em homologação (branch develop) -> extrai do arquivo pom.xml
     getHomologVersion: async (projectId) => {
 
         const response = await axios.get(`${process.env.GITLAB_API}/${projectId}/repository/files/pom.xml/raw?ref=develop&private_token=${process.env.PRIVATE_TOKEN}`)
