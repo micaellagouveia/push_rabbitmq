@@ -10,25 +10,37 @@ routes.get('/', (req, res) => {
 
 routes.post('/rabbitmq', async (req, res) => {
 
+    if (req.body.commits.length < 1) {
+        return res.send('Não foram feitos commits')
+    }
+
     const push = new Push(req.body)
 
     const branch = push.branch
-    const modified = push.modified
-    const added = push.added
+    let modified = ''
+    let added = ''
+
+    if (push.commit) {
+        modified = push.modified
+        added = push.added
+    }
 
     if (branch === 'develop') {
         let sql = ''
 
+        if (!push.commit) {
+            return res.send('Não foram feitos commits')
+        }
         //Se existir o array modified, conferir se há  arquivo sql
-        if(modified) sql = utils.checkSql(modified)
+        if (modified) sql = utils.checkSql(modified)
 
         //Se não tiver arquivo sql no modified e tiver arquivos no added, conferir added
-        if(!sql && added) sql = utils.checkSql(added)
+        if (!sql && added) sql = utils.checkSql(added)
 
         console.log('Sql: ' + sql)
 
         //Se houver arquivo sql em algum dos arrays
-       if (sql) {
+        if (sql) {
             const homologVersion = await repository.getHomologVersion(push.id)
 
             const fileVersion = utils.getFileVersion(sql)
@@ -36,11 +48,12 @@ routes.post('/rabbitmq', async (req, res) => {
             return res.send(checkVersions)
         }
         return res.send('Arquivo .sql não foi modificado')
-x
     }
     return res.send('Branch develop não está sendo requisitada.')
 
 })
+
+
 
 
 module.exports = routes

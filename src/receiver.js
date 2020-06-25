@@ -21,48 +21,52 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
         console.log('[*] Waiting messages')
         channel.consume(queue, async (msg) => {
 
-            setTimeout(function () {
+            setTimeout(async () => {
                 let mensagem = JSON.parse(msg.content.toString())
-
 
                 console.log(mensagem)
                 console.log('***********')
 
-                const push = new Push(mensagem)
-                const branch = push.branch
+                if (mensagem.commits.length > 0) {
+                    const push = new Push(mensagem)
+                    const branch = push.branch
 
-                console.log('Branch: ' + branch)
+                    console.log('Branch: ' + branch)
 
+                    if (branch === 'develop') {
+                        const modified = push.modified
+                        const added = push.added
+                        let sql = ''
 
-                if (branch === 'develop') {
-                    let modified = push.modified
-                    let added = push.added
-                    let sql = ''
+                        //Se existir o array modified, conferir se há  arquivo sql
+                        if (modified) sql = utils.checkSql(modified)
 
-                    //Se existir o array modified, conferir se há  arquivo sql
-                    if (modified) sql = utils.checkSql(modified)
+                        //Se não tiver arquivo sql no modified e tiver arquivos no added, conferir added
+                        if (!sql && added) sql = utils.checkSql(added)
 
-                    //Se não tiver arquivo sql no modified e tiver arquivos no added, conferir added
-                    if (!sql && added) sql = utils.checkSql(added)
+                        console.log('Sql: ' + sql)
 
-                    console.log('Sql: ' + sql)
+                        //Se houver arquivo sql em algum dos arrays
+                        if (sql) {
+                            const homologVersion = await repository.getHomologVersion(push.id)
+                            const fileVersion = utils.getFileVersion(sql)
 
-                    //Se houver arquivo sql em algum dos arrays
-                    if (sql) {
-                        console.log('Entrou aqui')
-                        const homologVersion = await repository.getHomologVersion(push.id)
-                        const fileVersion = utils.getFileVersion(sql)
+                            console.log('homologVersion: ' + homologVersion)
+                            console.log('fileVersion: ' + fileVersion)
 
-                        console.log('homologVersion: ' + homologVersion)
-                        console.log('fileVersion: ' + fileVersion)
-
-                        const checkVersions = utils.compareVersions(homologVersion, fileVersion)
-                        console.log('check: ' + checkVersions)
+                            const checkVersions = utils.compareVersions(homologVersion, fileVersion)
+                            console.log('check: ' + checkVersions)
+                        }
+                        else {
+                            console.log('Arquivo .sql não foi modificado')
+                        }
+                    } else {
+                        console.log("NÃO É A BRANCH DEVELOP")
                     }
-                    else {
-                        console.log('Arquivo .sql não foi modificado')
-                    }
+                } else {
+                    console.log('Não foram feitos commits')
                 }
+
             }, 5000)
 
         }, {
