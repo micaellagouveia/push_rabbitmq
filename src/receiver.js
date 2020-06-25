@@ -18,6 +18,7 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
         channel.assertQueue(queue, { exclusive: false })
         channel.bindQueue(queue, exchange, key)
 
+        channel.prefetch(1) //define a quantidade de msg pelo termo determinado no setTimeout
         console.log('[*] Waiting messages')
         channel.consume(queue, async (msg) => {
 
@@ -27,12 +28,14 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
                 console.log(mensagem)
                 console.log('***********')
 
+                // verificar se há commits no push
                 if (mensagem.commits.length > 0) {
                     const push = new Push(mensagem)
                     const branch = push.branch
 
                     console.log('Branch: ' + branch)
 
+                    // verificação da branch
                     if (branch === 'develop') {
                         const modified = push.modified
                         const added = push.added
@@ -48,26 +51,28 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
 
                         //Se houver arquivo sql em algum dos arrays
                         if (sql) {
+                            // pega as versões de script e de homologação
                             const homologVersion = await repository.getHomologVersion(push.id)
                             const fileVersion = utils.getFileVersion(sql)
 
                             console.log('homologVersion: ' + homologVersion)
                             console.log('fileVersion: ' + fileVersion)
 
+                            // verifica se as versões são iguais
                             const checkVersions = utils.compareVersions(homologVersion, fileVersion)
                             console.log('check: ' + checkVersions)
                         }
                         else {
-                            console.log('Arquivo .sql não foi modificado')
+                            console.log('--- Arquivo .sql não foi modificado ---')
                         }
                     } else {
-                        console.log("NÃO É A BRANCH DEVELOP")
+                        console.log("--- Branch diferente da develop ---")
                     }
                 } else {
-                    console.log('Não foram feitos commits')
+                    console.log('--- Não foram feitos commits ---')
                 }
 
-            }, 5000)
+            }, 8000)
 
         }, {
             noAck: true
@@ -76,6 +81,3 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
     });
 });
 
-
-// receber as mensagens com um intervalo, estao sendo entregues mt rapido e nao ta dando tempo de fazer toda a analise
-// caso 1: não há commits, logo nao tem a parte de modified e added

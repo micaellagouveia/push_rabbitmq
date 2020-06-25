@@ -41,9 +41,11 @@ routes.post('/rabbitmq', async (req, res) => {
 
         //Se houver arquivo sql em algum dos arrays
         if (sql) {
+            // pega as versões de script e de homologação
             const homologVersion = await repository.getHomologVersion(push.id)
-
             const fileVersion = utils.getFileVersion(sql)
+
+            // verifica se as versões são iguais
             const checkVersions = utils.compareVersions(homologVersion, fileVersion)
             return res.send(checkVersions)
         }
