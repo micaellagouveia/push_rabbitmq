@@ -17,20 +17,13 @@ routes.post('/rabbitmq', async (req, res) => {
     const push = new Push(req.body)
 
     const branch = push.branch
-    let modified = ''
-    let added = ''
+    const modified = push.modified
+    const added = push.added
 
-    if (push.commit) {
-        modified = push.modified
-        added = push.added
-    }
-
-    if (branch === 'develop') {
+    // Verificar se a branch é a develop
+    if (branch.includes('develop')) {
         let sql = ''
 
-        if (!push.commit) {
-            return res.send('Não foram feitos commits')
-        }
         //Se existir o array modified, conferir se há  arquivo sql
         if (modified) sql = utils.checkSql(modified)
 
@@ -54,8 +47,5 @@ routes.post('/rabbitmq', async (req, res) => {
     return res.send('Branch develop não está sendo requisitada.')
 
 })
-
-
-
 
 module.exports = routes

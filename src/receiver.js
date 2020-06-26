@@ -36,7 +36,7 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
                     console.log('Branch: ' + branch)
 
                     // verificação da branch
-                    if (branch === 'develop') {
+                    if (branch.includes('develop')) {
                         const modified = push.modified
                         const added = push.added
                         let sql = ''
