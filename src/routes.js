@@ -40,6 +40,9 @@ routes.post('/rabbitmq', async (req, res) => {
 
             // verifica se as versões são iguais
             const checkVersions = utils.compareVersions(homologVersion, fileVersion)
+
+            const reader = new FileReader()
+
             return res.send(checkVersions)
         }
         return res.send('Arquivo .sql não foi modificado')

@@ -18,61 +18,63 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
         channel.assertQueue(queue, { exclusive: false })
         channel.bindQueue(queue, exchange, key)
 
-        channel.prefetch(1) //define a quantidade de msg pelo termo determinado no setTimeout
         console.log('[*] Waiting messages')
+        channel.prefetch(1) //define a quantidade de msg pelo termo determinado no setTimeout
         channel.consume(queue, async (msg) => {
 
-            setTimeout(async () => {
-                let mensagem = JSON.parse(msg.content.toString())
+            let mensagem = JSON.parse(msg.content.toString())
 
-                console.log(mensagem)
-                console.log('***********')
+            console.log(mensagem)
+            console.log('***********')
 
-                // verificar se há commits no push
-                if (mensagem.commits.length > 0) {
-                    const push = new Push(mensagem)
-                    const branch = push.branch
+            // verificar se há commits no push
+            if (mensagem.commits.length > 0) {
+                const push = new Push(mensagem)
+                const branch = push.branch
 
-                    console.log('Branch: ' + branch)
+                console.log('Branch: ' + branch)
 
-                    // verificação da branch
-                    if (branch.includes('develop')) {
-                        const modified = push.modified
-                        const added = push.added
-                        let sql = ''
+                // verificação da branch
+                if (branch.includes('develop')) {
+                    const modified = push.modified
+                    const added = push.added
+                    let sql = ''
 
-                        //Se existir o array modified, conferir se há  arquivo sql
-                        if (modified) sql = utils.checkSql(modified)
+                    //Se existir o array modified, conferir se há  arquivo sql
+                    if (modified) sql = utils.checkSql(modified)
 
-                        //Se não tiver arquivo sql no modified e tiver arquivos no added, conferir added
-                        if (!sql && added) sql = utils.checkSql(added)
+                    //Se não tiver arquivo sql no modified e tiver arquivos no added, conferir added
+                    if (!sql && added) sql = utils.checkSql(added)
 
-                        console.log('Sql: ' + sql)
+                    console.log('Sql: ' + sql)
 
-                        //Se houver arquivo sql em algum dos arrays
-                        if (sql) {
-                            // pega as versões de script e de homologação
-                            const homologVersion = await repository.getHomologVersion(push.id)
-                            const fileVersion = utils.getFileVersion(sql)
+                    //Se houver arquivo sql em algum dos arrays
+                    if (sql) {
+                        // pega as versões de script e de homologação
+                        const homologVersion = await repository.getHomologVersion(push.id)
+                        const fileVersion = utils.getFileVersion(sql)
 
-                            console.log('homologVersion: ' + homologVersion)
-                            console.log('fileVersion: ' + fileVersion)
+                        console.log('homologVersion: ' + homologVersion)
+                        console.log('fileVersion: ' + fileVersion)
 
-                            // verifica se as versões são iguais
-                            const checkVersions = utils.compareVersions(homologVersion, fileVersion)
-                            console.log('check: ' + checkVersions)
-                        }
-                        else {
-                            console.log('--- Arquivo .sql não foi modificado ---')
-                        }
-                    } else {
-                        console.log("--- Branch diferente da develop ---")
+                        // verifica se as versões são iguais
+                        const checkVersions = utils.compareVersions(homologVersion, fileVersion)
+                        console.log('check: ' + checkVersions)
+                    }
+                    else {
+                        console.log('--- Arquivo .sql não foi modificado ---')
                     }
                 } else {
-                    console.log('--- Não foram feitos commits ---')
+                    console.log("--- Branch diferente da develop ---")
                 }
+            } else {
+                console.log('--- Não foram feitos commits ---')
+            }
 
-            }, 8000)
+            setTimeout(function () {
+                console.log(" [x] Done");
+                channel.ack(mensagem)
+            }, 10000);
 
         }, {
             noAck: true
