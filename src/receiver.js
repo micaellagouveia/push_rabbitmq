@@ -24,8 +24,6 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
         channel.prefetch(1) //define a quantidade de msg pelo termo determinado no setTimeout
         channel.consume(queue, async (msg) => {
 
-            var secs = msg.content.toString().split('.').length - 1;
-
             let mensagem = JSON.parse(msg.content.toString())
 
             // verificar se há commits no push
@@ -72,11 +70,9 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
                 console.log('--- Não foram feitos commits ---')
             }
 
+            //confirmação da análise, pronto para fazer a próxima
             channel.ack(msg)
             console.log('[x] Done')
-            //channel.ack(mensagem)
-
-
         }, {
             noAck: false
         });
