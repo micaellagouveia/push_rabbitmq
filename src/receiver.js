@@ -14,6 +14,8 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
         const queue = 'dev-platform.push'
         const key = process.env.ROUTINGKEY
 
+        console.log(process.env.ROUTINGKEY)
+
         channel.assertExchange(exchange, 'topic', { durable: true });
         channel.assertQueue(queue, { exclusive: false })
         channel.bindQueue(queue, exchange, key)
@@ -22,10 +24,9 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
         channel.prefetch(1) //define a quantidade de msg pelo termo determinado no setTimeout
         channel.consume(queue, async (msg) => {
 
-            let mensagem = JSON.parse(msg.content.toString())
+            var secs = msg.content.toString().split('.').length - 1;
 
-            console.log(mensagem)
-            console.log('***********')
+            let mensagem = JSON.parse(msg.content.toString())
 
             // verificar se há commits no push
             if (mensagem.commits.length > 0) {
@@ -71,13 +72,13 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
                 console.log('--- Não foram feitos commits ---')
             }
 
-            setTimeout(function () {
-                console.log(" [x] Done");
-                channel.ack(mensagem)
-            }, 10000);
+            channel.ack(msg)
+            console.log('[x] Done')
+            //channel.ack(mensagem)
+
 
         }, {
-            noAck: true
+            noAck: false
         });
 
     });
