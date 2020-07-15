@@ -1,4 +1,4 @@
-require('dotenv/config')
+/*require('dotenv/config')
 const amqp = require('amqplib/callback_api');
 const Push = require('./models/Push')
 const utils = require('./utils')
@@ -21,7 +21,7 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
         channel.bindQueue(queue, exchange, key)
 
         console.log('[*] Waiting messages')
-        channel.prefetch(1) //define a quantidade de msg pelo termo determinado no setTimeout
+        channel.prefetch(1) //define a quantidade de msg por vez
         channel.consume(queue, async (msg) => {
 
             let mensagem = JSON.parse(msg.content.toString())
@@ -79,4 +79,4 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
 
     });
 });
-
+*/

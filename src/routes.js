@@ -3,6 +3,7 @@ const receiver = require('./receiver.js')
 const Push = require('./models/Push')
 const utils = require('./utils')
 const repository = require('./requests/repository')
+const commits = require('./requests/commits')
 
 routes.get('/', (req, res) => {
     return res.json({ Hello: "World" })
@@ -42,9 +43,13 @@ routes.post('/rabbitmq', async (req, res) => {
             // verifica se as versões são iguais
             const checkVersions = utils.compareVersions(homologVersion, fileVersion)
 
-            const path = utils.getPathFile(sql, homologVersion)
+            // pega o path que o arquivo sql devera ir
+            const pathFile = utils.getPathFile(sql, homologVersion)
 
-            return res.send(path)
+            // move o arquivo para a pasta de homologação
+            const moveFile = await commits.moveFile(pathFile, sql, push.id)
+
+            return res.send(moveFile)
         }
         return res.send('Arquivo .sql não foi modificado')
     }
