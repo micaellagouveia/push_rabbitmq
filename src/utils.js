@@ -9,21 +9,21 @@ module.exports = {
         return ''
     },
 
-    // Pega o path em que foi feita a mudança do arquivo sql
-    getPath: (sql) => {
+    // Pega o path em que o arquivo vai ser movido
+    getPathFile: (sql, homologVersion) => {
         const array = sql.split('/')
         let path = ''
 
-        for (let i in array) {
-            if (array[i] === 'migrations') {
-                path += array[i]
-                break
-            }
-            else {
-                path += array[i] + '/'
-            }
+        const name = array[array.length - 1]
+
+        const newName = updateName(name, homologVersion)
+
+        console.log('nome: ' + newName)
+
+        for (let i = 0; i < array.length - 2; i++) { // length-2 pois o ultimo é o nome do arquivo, e o penultimo a versao antiga
+            path += array[i] + '/'
         }
-        return path
+        return path + homologVersion + '/' + newName
     },
 
     // Pega a versão que está o arquivo do push
@@ -37,9 +37,17 @@ module.exports = {
 
     // Compara versão do arquivo do push com a versão que está em homologação
     compareVersions: (homologVersion, fileVersion) => {
-        if(fileVersion === homologVersion){
+        if (fileVersion === homologVersion) {
             return false
         }
         return true
     }
+}
+
+function updateName(name, homologVersion) {
+
+    const array = name.split('_')
+    array[1] = homologVersion
+
+    return array.join('_')
 }

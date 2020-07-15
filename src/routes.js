@@ -36,14 +36,15 @@ routes.post('/rabbitmq', async (req, res) => {
         if (sql) {
             // pega as versões de script e de homologação
             const homologVersion = await repository.getHomologVersion(push.id)
+            console.log('homolog: ' + homologVersion)
             const fileVersion = utils.getFileVersion(sql)
 
             // verifica se as versões são iguais
             const checkVersions = utils.compareVersions(homologVersion, fileVersion)
 
-            const reader = new FileReader()
+            const path = utils.getPathFile(sql, homologVersion)
 
-            return res.send(checkVersions)
+            return res.send(path)
         }
         return res.send('Arquivo .sql não foi modificado')
     }
