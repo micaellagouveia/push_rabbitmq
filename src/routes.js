@@ -48,6 +48,7 @@ routes.post('/rabbitmq', async (req, res) => {
 
             // move o arquivo para a pasta de homologação
             const moveFile = await commits.moveFile(pathFile, sql, push.id)
+            console.log(moveFile)
 
             return res.send(moveFile)
         }

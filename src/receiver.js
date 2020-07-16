@@ -3,6 +3,7 @@ const amqp = require('amqplib/callback_api');
 const Push = require('./models/Push')
 const utils = require('./utils')
 const repository = require('./requests/repository')
+const commits = require('./requests/commits')
 
 amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
     if (err0) throw err0;
@@ -60,12 +61,15 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
                         // pega o path que o arquivo sql devera ir
                         const pathFile = utils.getPathFile(sql, homologVersion)
 
-                        console.log('homologVersion: ' + homologVersion)
+                        console.log('homologVersion: ' + sql)
                         console.log('pathFile: ' + pathFile)
 
-                        // move o arquivo para a pasta de homologação
-                        const moveFile = await commits.moveFile(pathFile, sql, push.id)
-                        console.log(moveFile)
+                        if (checkVersions && push.id === 572) { // se as versões forem diferentes e coloquei a condição para o projeto do playground
+                            
+                            // move o arquivo para a pasta de homologação
+                            const moveFile = await commits.moveFile(pathFile, sql, push.id)
+                            console.log(moveFile)
+                        }
                     }
                     else {
                         console.log('--- Arquivo .sql não foi modificado ---')
