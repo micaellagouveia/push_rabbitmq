@@ -21,10 +21,7 @@ module.exports = {
             ]
         }
 
-        const response = await axios({
-            method: 'POST', url: `${process.env.GITLAB_API}/${id}/repository/commits?private_token=${process.env.PRIVATE_TOKEN}`,
-            data: { boody: json }
-        })
+        const response = await axios.post(`${process.env.GITLAB_API}/${id}/repository/commits?private_token=${process.env.PRIVATE_TOKEN}`, json)
 
         return response.data
     }

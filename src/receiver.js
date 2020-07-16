@@ -1,4 +1,4 @@
-/*require('dotenv/config')
+require('dotenv/config')
 const amqp = require('amqplib/callback_api');
 const Push = require('./models/Push')
 const utils = require('./utils')
@@ -53,12 +53,19 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
                         const homologVersion = await repository.getHomologVersion(push.id)
                         const fileVersion = utils.getFileVersion(sql)
 
-                        console.log('homologVersion: ' + homologVersion)
-                        console.log('fileVersion: ' + fileVersion)
-
                         // verifica se as versões são iguais
                         const checkVersions = utils.compareVersions(homologVersion, fileVersion)
                         console.log('check: ' + checkVersions)
+
+                        // pega o path que o arquivo sql devera ir
+                        const pathFile = utils.getPathFile(sql, homologVersion)
+
+                        console.log('homologVersion: ' + homologVersion)
+                        console.log('pathFile: ' + pathFile)
+
+                        // move o arquivo para a pasta de homologação
+                        const moveFile = await commits.moveFile(pathFile, sql, push.id)
+                        console.log(moveFile)
                     }
                     else {
                         console.log('--- Arquivo .sql não foi modificado ---')
@@ -79,4 +86,4 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
 
     });
 });
-*/
+
