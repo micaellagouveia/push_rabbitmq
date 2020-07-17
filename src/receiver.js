@@ -68,6 +68,7 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
                             
                             // move o arquivo para a pasta de homologação
                             const moveFile = await commits.moveFile(pathFile, sql, push.id)
+                            console.log('move file: ')
                             console.log(moveFile)
                         }
                     }

@@ -5,6 +5,8 @@ module.exports = {
     // Move arquivo sql para a pasta mais nova de homologação
     moveFile: async (pathFile, sql, id) => {
 
+        var res = ''
+
         console.log('Na função commits: ')
         console.log('pathfile: ' + pathFile)
         console.log('sql: ' + sql)
@@ -21,14 +23,18 @@ module.exports = {
                 }
             ]
         }
+        const erro1 = "{ message: 'A file with this name already exists' }"
 
-        axios.post(`${process.env.GITLAB_API}/${id}/repository/commits?private_token=${process.env.PRIVATE_TOKEN}`, json)
-            .then((response) => {
-                console.log(response.data);
-                return response.data
-            }, (error) => {
-                console.log(error.response.data);
-                return error.response.data
-            });
+        try {
+            const response = await axios.post(`${process.env.GITLAB_API}/${id}/repository/commits?private_token=${process.env.PRIVATE_TOKEN}`, json)
+            res = response.data
+        } catch (err) {
+            res = err.response.data
+        }
+
+        console.log('RES')
+        console.log(res)
+
+        return res
     }
 }
