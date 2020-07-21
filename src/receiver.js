@@ -15,8 +15,6 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
         const queue = 'dev-platform.push'
         const key = process.env.ROUTINGKEY
 
-        console.log(process.env.ROUTINGKEY)
-
         channel.assertExchange(exchange, 'topic', { durable: true });
         channel.assertQueue(queue, { exclusive: false })
         channel.bindQueue(queue, exchange, key)
@@ -32,8 +30,6 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
                 const push = new Push(mensagem)
                 const branch = push.branch
 
-                console.log('Branch: ' + branch)
-
                 // verificação da branch
                 if (branch.includes('develop')) {
                     const modified = push.modified
@@ -45,8 +41,6 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
 
                     //Se não tiver arquivo sql no modified e tiver arquivos no added, conferir added
                     if (!sql && added) sql = utils.checkSql(added)
-
-                    console.log('Sql: ' + sql)
 
                     //Se houver arquivo sql em algum dos arrays
                     if (sql) {
@@ -61,22 +55,19 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
                         // pega o path que o arquivo sql devera ir
                         const pathFile = utils.getPathFile(sql, homologVersion)
 
-                        console.log('homologVersion: ' + sql)
-                        console.log('pathFile: ' + pathFile)
-
-                        if (checkVersions && push.id === 572) { // se as versões forem diferentes e coloquei a condição para o projeto do playground
-                            
-                            // move o arquivo para a pasta de homologação
-                            const moveFile = await commits.moveFile(pathFile, sql, push.id)
-                            console.log('move file: ')
-                            console.log(moveFile)
-                        }
+                         if (checkVersions && push.id === 572) { // se as versões forem diferentes e coloquei a condição para o projeto do playground
+                             
+                             // move o arquivo para a pasta de homologação
+                             const moveFile = await commits.moveFile(pathFile, sql, push.id)
+                             console.log('move file: ')
+                             console.log(moveFile)
+                         }
                     }
                     else {
                         console.log('--- Arquivo .sql não foi modificado ---')
                     }
                 } else {
-                    console.log("--- Branch diferente da develop ---")
+                    console.log("--- Branch diferente da develop : " + branch)
                 }
             } else {
                 console.log('--- Não foram feitos commits ---')
@@ -88,7 +79,6 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
         }, {
             noAck: false
         });
-
     });
 });
 

@@ -8,8 +8,8 @@ module.exports = {
         var res = ''
 
         console.log('Na função commits: ')
-        console.log('pathfile: ' + pathFile)
-        console.log('sql: ' + sql)
+        console.log('nova: ' + pathFile)
+        console.log('antiga: ' + sql)
         console.log('id: ' + id)
         const json =
         {
@@ -23,7 +23,7 @@ module.exports = {
                 }
             ]
         }
-        const erro1 = "{ message: 'A file with this name already exists' }"
+        const erro1 = `{"message":"A file with this name already exists"}`
 
         try {
             const response = await axios.post(`${process.env.GITLAB_API}/${id}/repository/commits?private_token=${process.env.PRIVATE_TOKEN}`, json)
@@ -32,6 +32,13 @@ module.exports = {
             res = err.response.data
         }
 
+        console.log('JSON.STRINGIFY:')
+        console.log(JSON.stringify(res))
+
+        if(JSON.stringify(res) === erro1){
+            console.log('Erro: arquivo com mesmo nome já existente!')
+
+        }
         console.log('RES')
         console.log(res)
 

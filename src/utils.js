@@ -18,8 +18,6 @@ module.exports = {
 
         const newName = updateName(name, homologVersion)
 
-        console.log('nome: ' + newName)
-
         for (let i = 0; i < array.length - 2; i++) { // length-2 pois o ultimo é o nome do arquivo, e o penultimo a versao antiga
             path += array[i] + '/'
         }
