@@ -39,6 +39,33 @@ module.exports = {
             return false
         }
         return true
+    },
+
+    // pega o path para a função de resgatar os arquivos do pasta de homologação
+    getPathTree: (sql, homologVersion) => {
+        const array = sql.split('/')
+        let path = ''
+
+        for (let i = 0; i < array.length - 2; i++) { // length-2 pois o ultimo é o nome do arquivo, e o penultimo a versao antiga
+            path += array[i] + '/'
+        }
+        return path + homologVersion
+    },
+
+    // retorna o numero que devo atribuir para atualizar o nome do arquivo novo
+    lastNumber: (arrayFiles) => {
+        let numbers = []
+        let higher = 0
+
+        for (let i in arrayFiles) {
+            let array = arrayFiles[i].split('_')
+            numbers[i] = array[2]
+            if (numbers[i] >= higher) higher = numbers[i]
+        }
+
+        const number = digitFormat(parseInt(higher) + 1, 3)
+
+        return number
     }
 }
 
@@ -48,4 +75,9 @@ function updateName(name, homologVersion) {
     array[1] = homologVersion
 
     return array.join('_')
+}
+
+function digitFormat(value, padding) {
+    var zeroes = new Array(padding + 1).join("0");
+    return (zeroes + value).slice(-padding);
 }

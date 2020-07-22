@@ -1,4 +1,4 @@
-require('dotenv/config')
+/*require('dotenv/config')
 const amqp = require('amqplib/callback_api');
 const Push = require('./models/Push')
 const utils = require('./utils')
@@ -82,3 +82,4 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
     });
 });
 
+*/

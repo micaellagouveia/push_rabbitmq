@@ -39,18 +39,39 @@ routes.post('/rabbitmq', async (req, res) => {
             const homologVersion = await repository.getHomologVersion(push.id)
             const fileVersion = utils.getFileVersion(sql)
 
+            console.log('file version: ' + fileVersion)
+            console.log('homolog version: ' + homologVersion)
+
             // verifica se as versões são iguais
             const checkVersions = utils.compareVersions(homologVersion, fileVersion)
 
             // pega o path que o arquivo sql devera ir
             const pathFile = utils.getPathFile(sql, homologVersion)
 
+            const pathTree = utils.getPathTree(sql, homologVersion)
+
+            console.log('pathTree: ' + pathTree)
+
+            const homologFile = await repository.getHomologFile(push.id, pathTree)
+
+            console.log(homologFile.length)
+
+            let arrayFiles = []
+
+            for(let i in homologFile){
+                arrayFiles[i] = homologFile[i].name  
+            }
+
+            console.log(arrayFiles)
+
+            const lastNumber = utils.lastNumber(arrayFiles)
+            console.log(lastNumber)
             // move o arquivo para a pasta de homologação
-            const moveFile = await commits.moveFile(pathFile, sql, push.id)
+          /*  const moveFile = await commits.moveFile(pathFile, sql, push.id)
             console.log('move file status:')
             console.log(moveFile)
-
-            return res.send(moveFile)
+*/
+            return res.send(homologFile)
         }
         return res.send('Arquivo .sql não foi modificado')
     }

@@ -16,5 +16,17 @@ module.exports = {
         const number = version.split('-')
 
         return number[0]
+    },
+
+    getHomologFile: async (projectId, pathTree) => {
+
+        const params = {
+            private_token : `${process.env.PRIVATE_TOKEN}`,
+            ref : 'develop',
+            path : pathTree
+        }
+        const response = await axios.get(`${process.env.GITLAB_API}/${projectId}/repository/tree?ref=develop&private_token=${process.env.PRIVATE_TOKEN}&path=${pathTree}`)
+
+        return response.data
     }
 }
