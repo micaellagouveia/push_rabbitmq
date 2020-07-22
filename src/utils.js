@@ -10,13 +10,13 @@ module.exports = {
     },
 
     // Pega o path em que o arquivo vai ser movido
-    getPathFile: (sql, homologVersion) => {
+    getPathFile: (sql, homologVersion, number) => {
         const array = sql.split('/')
         let path = ''
 
         const name = array[array.length - 1]
 
-        const newName = updateName(name, homologVersion)
+        const newName = updateName(name, homologVersion, number)
 
         for (let i = 0; i < array.length - 2; i++) { // length-2 pois o ultimo é o nome do arquivo, e o penultimo a versao antiga
             path += array[i] + '/'
@@ -42,7 +42,7 @@ module.exports = {
     },
 
     // pega o path para a função de resgatar os arquivos do pasta de homologação
-    getPathTree: (sql, homologVersion) => {
+    getFileTree: (sql, homologVersion) => {
         const array = sql.split('/')
         let path = ''
 
@@ -69,10 +69,16 @@ module.exports = {
     }
 }
 
-function updateName(name, homologVersion) {
+function updateName(name, homologVersion, number) {
+
+    console.log('FUNÇÃO UPDATE NAME')
+    console.log('name: ' + name)
+    console.log('homologVersion: ' + homologVersion)
+    console.log('number: ' + number)
 
     const array = name.split('_')
     array[1] = homologVersion
+    array[2] = number
 
     return array.join('_')
 }

@@ -45,33 +45,43 @@ routes.post('/rabbitmq', async (req, res) => {
             // verifica se as versões são iguais
             const checkVersions = utils.compareVersions(homologVersion, fileVersion)
 
-            // pega o path que o arquivo sql devera ir
-            const pathFile = utils.getPathFile(sql, homologVersion)
+            if (checkVersions) {
 
-            const pathTree = utils.getPathTree(sql, homologVersion)
+                // pega caminho para fazer o get do file da pasta de homologação
+                const fileTree = utils.getFileTree(sql, homologVersion)
+                console.log('pathTree: ' + fileTree)
 
-            console.log('pathTree: ' + pathTree)
+                // faz a requisição dos arquivos dentro da pasta de homologação
+                const homologFile = await repository.getHomologFile(push.id, fileTree)
 
-            const homologFile = await repository.getHomologFile(push.id, pathTree)
+                console.log(homologFile.length)
 
-            console.log(homologFile.length)
+                let arrayFiles = []
 
-            let arrayFiles = []
+                // array com os nomes dos arquivos da pasta de homologação
+                for (let i in homologFile) {
+                    arrayFiles[i] = homologFile[i].name
+                }
 
-            for(let i in homologFile){
-                arrayFiles[i] = homologFile[i].name  
+                console.log(arrayFiles)
+
+                // pegar o último número para adicionar no nome do arquivo que será movido
+                const lastNumber = utils.lastNumber(arrayFiles)
+                console.log(lastNumber)
+
+                
+                // pega o path que o arquivo sql devera ir com seu novo nome
+                const pathFile = utils.getPathFile(sql, homologVersion, lastNumber)
+
+                // move o arquivo para a pasta de homologação
+                /*  const moveFile = await commits.moveFile(pathFile, sql, push.id)
+                  console.log('move file status:')
+                  console.log(moveFile)
+      */
+                return res.send(pathFile)
             }
 
-            console.log(arrayFiles)
 
-            const lastNumber = utils.lastNumber(arrayFiles)
-            console.log(lastNumber)
-            // move o arquivo para a pasta de homologação
-          /*  const moveFile = await commits.moveFile(pathFile, sql, push.id)
-            console.log('move file status:')
-            console.log(moveFile)
-*/
-            return res.send(homologFile)
         }
         return res.send('Arquivo .sql não foi modificado')
     }
