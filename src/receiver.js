@@ -1,4 +1,4 @@
-/*require('dotenv/config')
+require('dotenv/config')
 const amqp = require('amqplib/callback_api');
 const Push = require('./models/Push')
 const utils = require('./utils')
@@ -23,7 +23,7 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
         channel.prefetch(1) //define a quantidade de msg por vez
         channel.consume(queue, async (msg) => {
 
-            let mensagem = JSON.parse(msg.content.toString())
+            const mensagem = JSON.parse(msg.content.toString())
 
             // verificar se há commits no push
             if (mensagem.commits.length > 0) {
@@ -50,18 +50,47 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
 
                         // verifica se as versões são iguais
                         const checkVersions = utils.compareVersions(homologVersion, fileVersion)
+                        console.log('Houve mudanças no arquivo .sql')
                         console.log('check: ' + checkVersions)
 
-                        // pega o path que o arquivo sql devera ir
-                        const pathFile = utils.getPathFile(sql, homologVersion)
+                        if (checkVersions) {
 
-                         if (checkVersions && push.id === 572) { // se as versões forem diferentes e coloquei a condição para o projeto do playground
-                             
-                             // move o arquivo para a pasta de homologação
-                             const moveFile = await commits.moveFile(pathFile, sql, push.id)
-                             console.log('RESPOSTA:')
-                             console.log(moveFile)
-                         }
+                            console.log('Versão de arquivo .sql difere da versão de homologação')
+
+                            // pega caminho para fazer o get do file da pasta de homologação
+                            const fileTree = utils.getFileTree(sql, homologVersion)
+                            console.log('pathTree: ' + fileTree)
+
+                            // faz a requisição dos arquivos dentro da pasta de homologação
+                            const homologFile = await repository.getHomologFile(push.id, fileTree)
+
+                            let arrayFiles = []
+
+                            // array com os nomes dos arquivos da pasta de homologação
+                            for (let i in homologFile) {
+                                arrayFiles[i] = homologFile[i].name
+                            }
+
+                            console.log(arrayFiles)
+
+                            // pegar o último número para adicionar no nome do arquivo que será movido
+                            const lastNumber = utils.lastNumber(arrayFiles)
+                            console.log(lastNumber)
+
+
+                            // pega o path que o arquivo sql devera ir com seu novo nome
+                            const pathFile = utils.getPathFile(sql, homologVersion, lastNumber)
+                            console.log('pathfile: ' + pathFile)
+
+                            // move o arquivo para a pasta de homologação
+                            if (push.id === 572) {
+                                console.log('Projeto Playground -> posso mover arquivos')
+                                const moveFile = await commits.moveFile(pathFile, sql, push.id)
+                                console.log('move file status:')
+                                console.log(moveFile)
+
+                            }
+                        }
                     }
                     else {
                         console.log('--- Arquivo .sql não foi modificado ---')
@@ -81,5 +110,3 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
         });
     });
 });
-
-*/

@@ -7,10 +7,11 @@ module.exports = {
 
         var res = ''
 
-        console.log('Na função commits: ')
-        console.log('nova: ' + pathFile)
+        console.log('FUNÇÃO MOVEFILE:  ************')
         console.log('antiga: ' + sql)
+        console.log('nova: ' + pathFile)
         console.log('id: ' + id)
+        console.log('******************************')
 
         const erro1 = `{"message":"A file with this name already exists"}`
         const erro2 = `{"message":"A file with this name doesn't exist"}`
@@ -33,9 +34,6 @@ module.exports = {
         } catch (err) {
             res = err.response.data
         }
-
-        console.log('JSON.STRINGIFY:')
-        console.log(JSON.stringify(res))
 
         if (JSON.stringify(res) === erro2) res = 'Erro: arquivo não existente'
 

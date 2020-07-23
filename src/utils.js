@@ -71,10 +71,11 @@ module.exports = {
 
 function updateName(name, homologVersion, number) {
 
-    console.log('FUNÇÃO UPDATE NAME')
+    console.log('FUNÇÃO UPDATE NAME *********')
     console.log('name: ' + name)
     console.log('homologVersion: ' + homologVersion)
     console.log('number: ' + number)
+    console.log('****************************')
 
     const array = name.split('_')
     array[1] = homologVersion
