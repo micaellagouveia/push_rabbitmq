@@ -18,6 +18,7 @@ module.exports = {
         return number[0]
     },
 
+    // acessa os arquivos da pasta de homologação
     getHomologFile: async (projectId, pathTree) => {
 
         const params = {

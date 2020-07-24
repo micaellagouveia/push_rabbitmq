@@ -11,8 +11,8 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
     connection.createChannel(async (err1, channel) => {
         if (err1) throw err1;
 
-        const exchange = 'pje-dev-platform-exchange';
-        const queue = 'dev-platform.push'
+        const exchange = process.env.CNJ_EXCHANGE
+        const queue = process.env.CNJ_QUEUE
         const key = process.env.ROUTINGKEY
 
         channel.assertExchange(exchange, 'topic', { durable: true });
@@ -20,6 +20,7 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
         channel.bindQueue(queue, exchange, key)
 
         console.log('[*] Waiting messages')
+
         channel.prefetch(1) //define a quantidade de msg por vez
         channel.consume(queue, async (msg) => {
 
@@ -50,7 +51,6 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
 
                         // verifica se as versões são iguais
                         const checkVersions = utils.compareVersions(homologVersion, fileVersion)
-                        console.log('Houve mudanças no arquivo .sql')
                         console.log('check: ' + checkVersions)
 
                         if (checkVersions) {
