@@ -48,7 +48,7 @@ routes.post('/rabbitmq', async (req, res) => {
             if (checkVersions) {
 
                 // pega caminho para fazer o get do file da pasta de homologação
-                const fileTree = utils.getFileTree(sql, homologVersion)
+                const fileTree = utils.getPathHomologFile(sql, homologVersion)
                 console.log('pathTree: ' + fileTree)
 
                 // faz a requisição dos arquivos dentro da pasta de homologação

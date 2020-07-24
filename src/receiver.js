@@ -1,7 +1,7 @@
 require('dotenv/config')
 const amqp = require('amqplib/callback_api');
 const Push = require('./models/Push')
-const utils = require('./utils')
+const utils = require('./utils/utils')
 const repository = require('./requests/repository')
 const commits = require('./requests/commits')
 
@@ -58,7 +58,7 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
                             console.log('Versão de arquivo .sql difere da versão de homologação')
 
                             // pega caminho para fazer o get do file da pasta de homologação
-                            const fileTree = utils.getFileTree(sql, homologVersion)
+                            const fileTree = utils.getPathHomologFile(sql, homologVersion)
                             console.log('pathTree: ' + fileTree)
 
                             // faz a requisição dos arquivos dentro da pasta de homologação

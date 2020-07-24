@@ -42,7 +42,7 @@ module.exports = {
     },
 
     // pega o path para a função de resgatar os arquivos do pasta de homologação
-    getFileTree: (sql, homologVersion) => {
+    getPathHomologFile: (sql, homologVersion) => {
         const array = sql.split('/')
         let path = ''
 
