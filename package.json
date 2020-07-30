@@ -10,7 +10,7 @@
   "author": "Micaella Gouveia <micaella2212@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "mocha test",
+    "test": "nyc mocha",
     "start": "node src/index.js",
     "dev": "nodemon src/index.js"
   },
@@ -24,6 +24,7 @@
     "mocha": "^8.0.1",
     "morgan": "^1.10.0",
     "node": "^14.5.0",
+    "nyc": "^15.1.0",
     "xmldom": "^0.3.0"
   }
 }

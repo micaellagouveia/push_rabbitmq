@@ -4,6 +4,6 @@ yarn.lock
 .env
 
 pom.xml
-
+.nyc_output
 ex1.json
 ex2.json
