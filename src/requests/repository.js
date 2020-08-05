@@ -7,6 +7,9 @@ module.exports = {
     // Pega a versão que está em homologação (branch develop) -> extrai do arquivo pom.xml
     getHomologVersion: async (projectId) => {
 
+        console.log('entrou')
+        console.log(`${process.env.GITLAB_API}/${projectId}/repository/files/pom.xml/raw?ref=develop&private_token=${process.env.PRIVATE_TOKEN}`)
+
         const response = await axios.get(`${process.env.GITLAB_API}/${projectId}/repository/files/pom.xml/raw?ref=develop&private_token=${process.env.PRIVATE_TOKEN}`)
 
         const parser = new DOMParser()
@@ -14,6 +17,8 @@ module.exports = {
         
         const version = xmlDoc.getElementsByTagName('version')[0].childNodes[0].nodeValue
         const number = version.split('-')
+
+        console.log('number: ' + number[0])
 
         return number[0]
     },

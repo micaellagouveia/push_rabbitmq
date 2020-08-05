@@ -1,7 +1,6 @@
 const routes = require('express').Router()
-const receiver = require('./receiver.js')
 const Push = require('./models/Push')
-const utils = require('./utils')
+const utils = require('./utils/utils')
 const repository = require('./requests/repository')
 const commits = require('./requests/commits')
 
