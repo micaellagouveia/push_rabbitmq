@@ -26,6 +26,9 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
 
             const mensagem = JSON.parse(msg.content.toString())
 
+
+            if(mensagem.project.name !== 'playground-copia-pje'){
+
             // verificar se há commits no push
             if (mensagem.commits.length > 0) {
                 const push = new Push(mensagem)
@@ -102,6 +105,7 @@ amqp.connect(process.env.AMQP_URL, async (err0, connection) => {
                 console.log('--- Não foram feitos commits ---')
             }
 
+        }
             //confirmação da análise, pronto para fazer a próxima
             channel.ack(msg)
             console.log('[x] Done')

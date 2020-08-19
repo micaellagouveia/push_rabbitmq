@@ -10,9 +10,9 @@
   "author": "Micaella Gouveia <micaella2212@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "nyc mocha",
     "start": "node src/receiver.js",
-    "dev": "nodemon src/index.js"
+    "test": "nyc mocha"
+    
   },
   "dependencies": {
     "amqplib": "^0.6.0",

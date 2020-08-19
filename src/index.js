@@ -7,6 +7,6 @@ const HOST = '0.0.0.0'
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(morgan('dev'))
-app.use(require('./routes'))
+app.use(require('./receiver'))
 
 app.listen(process.env.PORT || 3000, HOST)
